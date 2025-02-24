@@ -15,6 +15,18 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const isActiveRoute = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const navItems = [
+    { path: '/', label: 'Home' },
+    { path: '/projects', label: 'Projects' },
+    { path: '/skills', label: 'Skills' },
+    { path: '/experience', label: 'Experience' },
+    { path: '/contact', label: 'Contact' }
+  ];
+
   return (
     <motion.nav
       initial={{ y: -100 }}
@@ -32,20 +44,25 @@ const Navbar = () => {
           </Link>
           
           <div className="hidden md:flex items-center space-x-8">
-            {['Home', 'Projects', 'Skills', 'Experience', 'Contact'].map((item) => (
+            {navItems.map((item) => (
               <Link
-                key={item}
-                to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
+                key={item.path}
+                to={item.path}
                 className={`text-sm font-medium transition-colors ${
-                  scrolled ? 'text-gray-900 hover:text-blue-600' : 'text-white/90 hover:text-white'
+                  isActiveRoute(item.path)
+                    ? scrolled
+                      ? 'text-blue-600'
+                      : 'text-white'
+                    : scrolled
+                      ? 'text-gray-900 hover:text-blue-600'
+                      : 'text-white/90 hover:text-white'
                 }`}
               >
-                {item}
+                {item.label}
               </Link>
             ))}
           </div>
 
-          {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className={`md:hidden p-2 rounded-full ${
@@ -75,7 +92,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -85,14 +101,18 @@ const Navbar = () => {
             className="md:hidden fixed inset-0 bg-blue-600 z-40"
           >
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-              {['Home', 'Projects', 'Skills', 'Experience', 'Contact'].map((item) => (
+              {navItems.map((item) => (
                 <Link
-                  key={item}
-                  to={item === 'Home' ? '/' : `/${item.toLowerCase()}`}
-                  className="block px-3 py-2 rounded-md text-base font-medium text-white"
+                  key={item.path}
+                  to={item.path}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActiveRoute(item.path)
+                      ? 'bg-blue-700 text-white'
+                      : 'text-white hover:bg-blue-700'
+                  }`}
                   onClick={() => setIsOpen(false)}
                 >
-                  {item}
+                  {item.label}
                 </Link>
               ))}
             </div>
